@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'postFoundItem.dart';
-import 'postLostItem.dart';
+import 'post_lost.dart';
+import 'post_found.dart';
+import 'messages.dart';
+import 'profile.dart';
 
 void main() => runApp(MyApp());
 
@@ -108,7 +110,7 @@ class HomePage extends StatelessWidget {
                         ),
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Found Item'),
+                      child: Text('+ Found Item'),
                     ),
                   ),
                 ],
@@ -178,18 +180,34 @@ class HomePage extends StatelessWidget {
               label: "My Posts",
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/Message.png',
-                width: 24,
-                height: 24,
+              icon: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MessagesPage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/icons/Message.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
               label: "Messages",
             ),
             BottomNavigationBarItem(
-              icon: Image.asset(
-                'assets/icons/Profile.png',
-                width: 24,
-                height: 24,
+              icon: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ProfilePage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/icons/Profile.png',
+                  width: 24,
+                  height: 24,
+                ),
               ),
               label: "Profile",
             ),

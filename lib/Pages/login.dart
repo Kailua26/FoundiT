@@ -1,24 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/Pages/home.dart';
+import 'package:flutter_application_1/Pages/signup.dart';
+import '/database/db_helper.dart'; // <-- important import
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const LoginPage(),
-    );
-  }
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  void _login() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Please fill all fields.');
+      return;
+    }
+
+    final dbHelper = DatabaseHelper();
+    final user = await dbHelper.getUser(email, password);
+
+    if (user != null) {
+      // Login success
+      _showMessage('Login Successful!', isSuccess: true);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      // Login failed
+      _showMessage('Invalid Email or Password');
+    }
+  }
+
+  void _showMessage(String message, {bool isSuccess = false}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: isSuccess ? Colors.green : Colors.red,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +72,6 @@ class LoginPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
-                              // ignore: deprecated_member_use
                               color: Colors.grey.withOpacity(0.5),
                               blurRadius: 5,
                               offset: const Offset(0, 3),
@@ -66,8 +93,11 @@ class LoginPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            const TextField(
-                              decoration: InputDecoration(
+
+                            // Email TextField
+                            TextField(
+                              controller: _emailController,
+                              decoration: const InputDecoration(
                                 hintText: 'Email',
                                 hintStyle: TextStyle(color: Color(0xFFADAEBC)),
                                 fillColor: Color(0xFFF5FDF9),
@@ -98,9 +128,12 @@ class LoginPage extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(height: 20),
-                            const TextField(
+
+                            // Password TextField
+                            TextField(
+                              controller: _passwordController,
                               obscureText: true,
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Password',
                                 hintStyle: TextStyle(color: Color(0xFFADAEBC)),
                                 fillColor: Color(0xFFF5FDF9),
@@ -130,17 +163,14 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ),
                             ),
+
                             const SizedBox(height: 3),
+
                             Align(
                               alignment: Alignment.centerRight,
                               child: TextButton(
                                 onPressed: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ),
-                                  );
+                                  // You can handle forgot password feature here
                                 },
                                 child: const Text(
                                   'Forgot Password?',
@@ -148,7 +178,9 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ),
                             ),
+
                             const SizedBox(height: 20),
+
                             ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: const Color(0xFFACF7C1),
@@ -160,16 +192,9 @@ class LoginPage extends StatelessWidget {
                                 ),
                                 minimumSize: const Size(double.infinity, 50),
                               ),
-                             onPressed: () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => HomePage(),
-                                    ),
-                                  );
-                                },
+                              onPressed: _login,
                               child: const Text(
-                                'Continue',
+                                'LOGIN',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
                                   color: Color(0xFF4A8F6E),
@@ -178,7 +203,9 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ),
                             ),
+
                             const SizedBox(height: 10),
+
                             Row(
                               children: [
                                 const Expanded(
@@ -202,7 +229,9 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ],
                             ),
+
                             const SizedBox(height: 10),
+
                             ElevatedButton.icon(
                               onPressed: () {},
                               icon: Image.asset(
@@ -211,7 +240,7 @@ class LoginPage extends StatelessWidget {
                                 width: 24,
                               ),
                               label: const Text(
-                                'Sign Up with Google',
+                                'Login with Google',
                                 style: TextStyle(color: Colors.black),
                               ),
                               style: ElevatedButton.styleFrom(
@@ -225,7 +254,9 @@ class LoginPage extends StatelessWidget {
                                 minimumSize: const Size(double.infinity, 50),
                               ),
                             ),
+
                             const SizedBox(height: 10),
+
                             ElevatedButton.icon(
                               onPressed: () {},
                               icon: Image.asset(
@@ -234,7 +265,7 @@ class LoginPage extends StatelessWidget {
                                 width: 24,
                               ),
                               label: const Text(
-                                'Sign Up with Facebook',
+                                'Login with Facebook',
                                 style: TextStyle(color: Colors.white),
                               ),
                               style: ElevatedButton.styleFrom(
@@ -248,6 +279,40 @@ class LoginPage extends StatelessWidget {
                                 minimumSize: const Size(double.infinity, 50),
                               ),
                             ),
+
+                            const SizedBox(height: 10),
+
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  "Don't Have An Account? ",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => SignupPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text(
+                                    "SIGNUP",
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF4A8F6E),
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
                             const SizedBox(height: 20),
                           ],
                         ),

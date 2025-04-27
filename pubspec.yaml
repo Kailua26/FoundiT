@@ -69,6 +69,7 @@ flutter:
     - assets/icons/Post.png
     - assets/icons/Message.png
     - assets/icons/Profile.png
+    - assets/profile.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:

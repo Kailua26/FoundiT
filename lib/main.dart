@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
-
-// Pages
-import 'Pages/home.dart';
-import 'Pages/login.dart';
-import 'Pages/signup.dart';
-import 'Pages/postFoundItem.dart';
-import 'Pages/postLostItem.dart';
+import 'pages/splash.dart';
+import 'pages/login.dart';
+import 'pages/signup.dart';
+import 'pages/home.dart';
+import 'pages/post_lost.dart';
+import 'pages/post_found.dart';
+import 'pages/item_details.dart';
+import 'pages/my_posts.dart';
+import 'pages/profile.dart';
+import 'pages/messages.dart';
+import 'pages/settings.dart';
+import 'pages/forgot_password.dart';
+import 'pages/search_results.dart';
+import 'pages/notifications.dart';
 
 void main() {
   runApp(const MyApp());
@@ -18,92 +24,34 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       title: 'FoundiT',
-      theme: ThemeData(primarySwatch: Colors.green, fontFamily: 'Poppins'),
-      home: const SplashScreen(), // Start with splash screen
-      routes: {
-        '/login': (context) => const LoginPage(),
-        '/signup': (context) => const SignUpPage(),
-        '/home': (context) => HomePage(),
-        '/postFoundItem': (context) => LostItemPage(),
-        '/postLostItem': (context) => FoundItemPage(),
-      },
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
-
-  @override
-  _SplashScreenState createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Timer(const Duration(seconds: 3), () {
-      Navigator.pushReplacementNamed(context, '/login');
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFFD7F5DF),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.location_on, size: 50, color: Color(0xFF164F4F)),
-            const SizedBox(height: 20),
-            RichText(
-              text: const TextSpan(
-                text: 'F',
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF164F4F),
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'oundi',
-                    style: TextStyle(fontSize: 40, color: Color(0xFF164F4F)),
-                  ),
-                  TextSpan(
-                    text: 'T',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF164F4F),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Text(
-              'GUSION TECH',
-              style: TextStyle(
-                fontSize: 10,
-                letterSpacing: 1,
-                color: Colors.blueGrey,
-              ),
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Lost it? Found it!',
-              style: TextStyle(fontSize: 16, color: Colors.black87),
-            ),
-            const SizedBox(height: 40),
-            const CircularProgressIndicator(
-              color: Color(0xFF164F4F),
-              strokeWidth: 3,
-            ),
-          ],
-        ),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primaryColor: Color(0xFF024D3D), // your green theme
+        fontFamily: 'Roboto', // or any font you use
       ),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const SplashScreen(),
+        '/login': (context) => const LoginPage(),
+        '/signup': (context) => const SignupPage(),
+        '/home': (context) => HomePage(),
+        '/post_lost': (context) => LostItemPage(),
+        '/post_found': (context) => FoundItemPage(),
+        '/item_details':
+            (context) => ItemDetailsPage(
+              itemName: 'Sample Item',
+              description: 'Sample Description',
+            ),
+        '/my_posts': (context) => MyPostsPage(),
+        '/profile': (context) => ProfilePage(),
+        '/messages': (context) => MessagesPage(),
+        '/settings': (context) => SettingsPage(),
+        '/forgot_password': (context) => ForgotPasswordPage(),
+        '/search_results':
+            (context) => SearchResultsPage(query: 'default query'),
+        '/notifications': (context) => NotificationsPage(),
+      },
     );
   }
 }

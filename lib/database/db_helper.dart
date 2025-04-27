@@ -1,43 +1,46 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DBHelper {
-  static Database? _db;
+class DatabaseHelper {
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  factory DatabaseHelper() => _instance;
+  static Database? _database;
 
-  static Future<Database> get database async {
-    if (_db != null) return _db!;
-    _db = await initDB();
-    return _db!;
+  DatabaseHelper._internal();
+
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await initDatabase();
+    return _database!;
   }
 
-  static Future<Database> initDB() async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'users.db');
-
+  Future<Database> initDatabase() async {
+    String path = join(await getDatabasesPath(), 'user_database.db');
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (db, version) {
-        return db.execute('''
+      onCreate: (db, version) async {
+        await db.execute('''
           CREATE TABLE users(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE,
-            password TEXT
+            email TEXT NOT NULL,
+            password TEXT NOT NULL
           )
         ''');
       },
     );
   }
 
-  static Future<int> insertUser(String email, String password) async {
+  Future<int> insertUser(String email, String password) async {
     final db = await database;
-    return await db.insert('users', {'email': email, 'password': password});
+    return await db.insert(
+      'users',
+      {'email': email, 'password': password},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 
-  static Future<Map<String, dynamic>?> getUser(
-    String email,
-    String password,
-  ) async {
+  Future<Map<String, dynamic>?> getUser(String email, String password) async {
     final db = await database;
     final res = await db.query(
       'users',
